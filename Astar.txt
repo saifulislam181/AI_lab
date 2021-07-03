@@ -1,0 +1,57 @@
+from queue import PriorityQueue
+
+nodeD = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'H', 7: 'I', 8: 'J',9:'G'}
+adjacents = [[-1, 6, -1, -1, -1,3, -1, -1, -1, -1],[6, -1, 3, 2, -1,3, -1, -1, -1, -1],[-1, 3, -1, 1, 5,-1, -1, -1, -1, -1],[-1, 2, 1, -1, 8,-1, -1, -1, -1, -1],[-1, -1, -1, 5, 8,-1, -1, 5, 5, -1],[3, -1, -1, -1, -1,-1, -1, 7, -1, -1],
+[-1, -1, -1, -1, -1,7, -1, -1, -1, -1],[-1, -1, -1, -1, 5,-1, 2, -1, 3, 3],[-1, -1, -1, -1, 5,-1, -1, 3, -1, -1],[-1, -1, -1, -1, -1,1, -1, 3, -1, -1]]
+h = [10,8,5,7,3,6,3,1,0,5]
+goalNode =8
+
+nodeObjects = dict()
+
+
+class Node:
+
+    def __init__(self, number, prevNode, costSofar, totalCost):
+        self.number = number
+        self.prevNode = prevNode
+        self.costSofar = costSofar
+        self.totalCost = totalCost
+
+
+source = Node(0, None, 0, 10)
+
+q = PriorityQueue()
+
+nodeObjects['0'] = source
+
+q.put((10, '0'))
+
+while not q.empty():
+    nameoftheNode = q.get()
+    # print(c)
+    currentNode = nodeObjects[nameoftheNode[1]]
+
+    if currentNode.number == goalNode:
+        print("Found goal")
+        print(f'Actual Cost -> {currentNode.costSofar}')
+        break
+
+    for x in range(0, 5):
+        if adjacents[currentNode.number][x] > 0:
+            costofnewnode = currentNode.costSofar + \
+                adjacents[currentNode.number][x]
+            totcost = costofnewnode + h[x]
+            newNode = Node(x, currentNode.number, costofnewnode, totcost)
+            nodeObjects[f'{x}'] = newNode
+            q.put((totcost, f'{x}'))
+
+print("Path from source to goal ->")
+n = currentNode
+stack = []
+while not n.prevNode == None:
+    stack.append(nodeD[n.number])
+    n = nodeObjects[f'{n.prevNode}']
+stack.append('S')
+
+while stack:
+    print(stack.pop())
